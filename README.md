@@ -1,5 +1,12 @@
-# Challenge
+# Spica Challenge
 
+Spica Challenge je razvojna naloga za podjetje Špica International. Projekt je enostranska aplikacija zgrajena z Angularjem, ki upravlja s podatki o evidenci delovnega časa zaposlenih. Povezuje se z AllHours REST API-jem (https://api4.allhours.com) in vsebuje tri poglede, ki se imenujejo:
+- Nastavitve za avtorizacijo,
+- Uporabniki za upravljanje zaposlenih in
+- Odsotnosti za spremljanje prostih dni.
+Uporabniki lahko pregledujejo, iščejo in dodajajo zaposlene ter upravljajo z njihovimi odsotnostmi preko preprostega vmesnika. Aplikacija shranjuje avtorizacijske podatke v lokalni shrambi za vzdrževanje seje.
+
+## Basic instructions (English)
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.1.
 
 ## Development server
