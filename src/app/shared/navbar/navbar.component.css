@@ -1,0 +1,17 @@
+.navbar {
+    box-shadow: 0 1px 10px -5px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+}
+
+.navbar-btn {
+    background-color: #de1f3f;
+    color: white;
+}
+
+.navbar-txt {
+    font-size: 1.15rem;
+}
+
+.navbar-collapse {
+    justify-content: space-between;
+}
