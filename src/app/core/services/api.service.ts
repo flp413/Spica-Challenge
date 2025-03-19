@@ -37,6 +37,30 @@ export class ApiService {
     );
   }
 
+  put<T>(endpoint: string, body: any): Observable<T> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        const headers = this.getAuthHeaders(token);
+        return this.http.put<T>(`${this.baseUrl}/${endpoint}`, body, { headers })
+          .pipe(
+            catchError(error => this.handleError(error))
+          );
+      })
+    );
+  }
+
+  delete<T>(endpoint: string): Observable<T> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        const headers = this.getAuthHeaders(token);
+        return this.http.delete<T>(`${this.baseUrl}/${endpoint}`, { headers })
+          .pipe(
+            catchError(error => this.handleError(error))
+          );
+      })
+    );
+  }
+
   private getAuthHeaders(token: string): HttpHeaders {
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`,
