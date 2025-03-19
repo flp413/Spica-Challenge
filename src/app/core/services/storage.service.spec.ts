@@ -4,7 +4,7 @@ import { StorageService } from './storage.service';
 
 describe('StorageService', () => {
   let service: StorageService;
-  const AUTH_KEY = 'allhours_auth';
+  const AUTH_KEY = 'auth_credentials';
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -45,22 +45,22 @@ describe('StorageService', () => {
   });
 
   it('should store token correctly', () => {
-    const token = 'token';
+    const token = 'auth_token';
     service.saveToken(token);
-    expect(localStorage.getItem('token')).toBe(token);
+    expect(localStorage.getItem('auth_token')).toBe(token);
   });
 
   it('should get token correctly', () => {
-    const token = 'token';
+    const token = 'auth_token';
     service.saveToken(token);
     expect(service.getToken()).toBe(token);
   });
 
   it('should clear token correctly', () => {
-    const token = 'token';
+    const token = 'auth_token';
     service.saveToken(token);
     service.clearToken();
-    expect(localStorage.getItem('token')).toBeNull();
+    expect(localStorage.getItem('auth_token')).toBeNull();
   }
   );
 
