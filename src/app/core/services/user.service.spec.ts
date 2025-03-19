@@ -72,4 +72,24 @@ describe('UserService', () => {
     });
   });
 
+  it('should create a new user', (done) => {
+    const newUser: NewUserRequest = {
+      FirstName: 'Jacinta',
+      LastName: 'Prijatelj',
+      Email: 'jacinta@outlook.com'
+    };
+    
+    const createdUser: User = { 
+      Id: '3', 
+      ...newUser 
+    } as User;
+    
+    apiServiceMock.post.and.returnValue(of(createdUser));
+    
+    service.createUser(newUser).subscribe(user => {
+      expect(user).toEqual(createdUser);
+      expect(apiServiceMock.post).toHaveBeenCalledWith('Users', newUser);
+      done();
+    });
+  });
 });
