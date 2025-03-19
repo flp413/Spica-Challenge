@@ -36,6 +36,7 @@ export class UserService {
     return this.apiService.get<User[] | UsersResponse>('Users', params).pipe(
       map((response) => {
         if (Array.isArray(response)) {
+          console.log(`Searching users with term: ${searchTerm}`);
           return response.filter(
             (user) =>
               user.FirstName.toLowerCase().startsWith(
@@ -54,5 +55,10 @@ export class UserService {
 
   getUserById(id: string): Observable<User> {
     return this.apiService.get<User>(`Users/${id}`);
+  }
+
+  createUser(user: NewUserRequest): Observable<User> {
+    console.log('Creating new user:', user);
+    return this.apiService.post<User>('Users', user);
   }
 }
