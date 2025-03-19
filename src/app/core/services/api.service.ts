@@ -25,6 +25,18 @@ export class ApiService {
     );
   }
 
+  post<T>(endpoint: string, body: any): Observable<T> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        const headers = this.getAuthHeaders(token);
+        return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body, { headers })
+          .pipe(
+            catchError(error => this.handleError(error))
+          );
+      })
+    );
+  }
+
   private getAuthHeaders(token: string): HttpHeaders {
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`,
