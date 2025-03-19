@@ -83,4 +83,21 @@ describe('ApiService', () => {
     req.flush(expectedData);
     expect(actualData).toEqual(expectedData);
   });
+
+  it('should make POST request with correct body', () => {
+    const expectedData = { id: '101', name: 'Created User' };
+    const endpoint = 'Users';
+    const requestBody = { name: 'Created User' };
+
+    let actualData: any = null;
+    service.post(endpoint, requestBody).subscribe((data) => {
+      actualData = data;
+    });
+
+    const req = httpController.expectOne(`${baseUrl}/${endpoint}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(requestBody);
+    req.flush(expectedData);
+    expect(actualData).toEqual(expectedData);
+  });
 });
