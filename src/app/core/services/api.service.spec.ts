@@ -100,4 +100,51 @@ describe('ApiService', () => {
     req.flush(expectedData);
     expect(actualData).toEqual(expectedData);
   });
+
+  it('should make PUT request with correct body', () => {
+    const expectedData = { id: '1', name: 'Updated User' };
+    const endpoint = 'Users/1';
+    const requestBody = { name: 'Updated User' };
+
+    let actualData: any = null;
+    service.put(endpoint, requestBody).subscribe((data) => {
+      actualData = data;
+    });
+
+    const req = httpController.expectOne(`${baseUrl}/${endpoint}`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(requestBody);
+    req.flush(expectedData);
+    expect(actualData).toEqual(expectedData);
+  });
+
+  it('should make DELETE request', () => {
+    const endpoint = 'Users/1';
+
+    let completed = false;
+    service.delete(endpoint).subscribe(() => {
+      completed = true;
+    });
+
+    const req = httpController.expectOne(`${baseUrl}/${endpoint}`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush({});
+    expect(completed).toBeTrue();
+  });
+
+  it('should handle 401 unauthorized errors', () => {
+    const endpoint = 'Users';
+
+    let errorMessage = '';
+    service.get(endpoint).subscribe({
+      next: () => fail('Should have failed with an error'),
+      error: (error) => {
+        errorMessage = error.message;
+      },
+    });
+
+    const req = httpController.expectOne(`${baseUrl}/${endpoint}`);
+    req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized'});
+    expect(errorMessage).toBe('Authentication error. Please log in again.');
+  });
 });
