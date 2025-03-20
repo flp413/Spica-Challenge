@@ -7,10 +7,11 @@ import { inject } from '@angular/core';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { RedirectService } from '../../../core/services/redirect.service';
 import { NewUserRequest } from '../../../core/models/user.model';
+import { AddAbsenceDialogComponent } from '../../absences/add-absence-dialog/add-absence-dialog.component';
 
 @Component({
   selector: 'app-user-grid',
-  imports: [ CommonModule, FormsModule, ReactiveFormsModule ],
+  imports: [ CommonModule, FormsModule, ReactiveFormsModule, AddAbsenceDialogComponent ],
   templateUrl: './user-grid.component.html',
   styleUrls: ['./user-grid.component.css'],
 })
@@ -27,6 +28,9 @@ export class UserGridComponent implements OnInit, OnDestroy {
   newUserForm!: FormGroup;
   showAddUserForm = false;
   submittingUser = false;
+
+  showAddAbsenceDialog = false;
+  selectedUser: User | null = null;
 
   private readonly userService = inject(UserService);
   private readonly redirectService = inject(RedirectService);
@@ -167,5 +171,20 @@ export class UserGridComponent implements OnInit, OnDestroy {
         this.errorMessage = `Error creating user: ${error.message}`;
       },
     });
+  }
+
+  openAddAbsenceDialog(user: User): void {
+    this.selectedUser = user;
+    this.showAddAbsenceDialog = true;
+  }
+
+  closeAddAbsenceDialog(): void {
+    this.showAddAbsenceDialog = false;
+    this.selectedUser = null;
+  }
+
+  onAbsenceAdded(): void {
+    this.errorMessage = `Absence added for ${this.selectedUser?.FirstName} ${this.selectedUser?.LastName}`;
+    setTimeout(() => (this.errorMessage = ''), 3000);
   }
 }
