@@ -4,63 +4,39 @@ Spica Challenge je razvojna naloga za podjetje Špica International. Projekt je 
 - Nastavitve za avtorizacijo,
 - Uporabniki za upravljanje zaposlenih in
 - Odsotnosti za spremljanje prostih dni.
+
 Uporabniki lahko pregledujejo, iščejo in dodajajo zaposlene ter upravljajo z njihovimi odsotnostmi preko preprostega vmesnika. Aplikacija shranjuje avtorizacijske podatke v lokalni shrambi za vzdrževanje seje.
 
-## Basic instructions (English)
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.1.
+Za pravilno delovanje aplikacije, morate imeti nameščen Angular 19. Prav tako mora biti omogočena uporaba novejše različiče ogrodja Bootstrap.
 
-## Development server
-
-To start a local development server, run:
+Za zagon lokalnega razvojnega strežnika, zaženite:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Ko se strežnik zažene, odprite brskalnik in se pomaknite do `http://localhost:4200/`, ki se bo samodejno ponovno naložila vsakič, ko spremenite katero koli izvorno datoteko.
 
-## Code scaffolding
+Upam, da bo aplikacija omogočila prijetno izkušnjo ter bo delovala nemoteno. Komentarji za izboljšave so dobrodošli. Uspešno uporabo želim!
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Basic instructions (English)
+# Spica Challenge
 
-```bash
-ng generate component component-name
-```
+Spica Challenge is a development task for Spica International. The project is a single page application built with Angular that manages employee timesheet data. It connects to the AllHours REST API (https://api4.allhours.com) and contains three views called:
+- Authorization Settings,
+- Users for employee management and
+- Absences for monitoring days off.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Users can view, search, add employees and manage their absences through a simple interface. The application stores authorisation data in a local repository for session maintenance.
 
-```bash
-ng generate --help
-```
+For the application to work properly, you must have Angular 19 installed. You must also be able to use a recent version of the Bootstrap framework.
 
-## Building
-
-To build the project run:
+To start the local development server, run:
 
 ```bash
-ng build
+ng serve
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Once the server is running, open a browser and navigate to `http://localhost:4200/`, which will automatically reload whenever you change any of the source files.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+I hope the app will provide a pleasant experience and will work smoothly. Comments for improvements are welcome. I wish you a successful application!
