@@ -97,8 +97,8 @@ export class UserGridComponent implements OnInit, OnDestroy {
   }
 
   performSearch(searchTerm: string): void {
-    if (!searchTerm.trim()) {
-      // if search is empty, show all users
+    // if empty search, show all users
+    if (!searchTerm || searchTerm.trim() === '') {
       this.filteredUsers = this.users;
       return;
     }
