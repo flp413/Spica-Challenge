@@ -89,4 +89,55 @@ export class AddAbsenceDialogComponent implements OnInit {
       }
     });
   }
+
+  onSubmit(): void {
+    if (this.absenceForm.invalid || this.submitting) {
+      return;
+    }
+    
+    this.submitting = true;
+    this.errorMessage = '';
+    
+    // timestamp to include time component
+    let timestamp = this.absenceForm.value.Timestamp;
+    if (!timestamp.includes('T')) {
+      timestamp = `${timestamp}T00:00:00Z`;
+    }
+    
+    const absenceRequest: NewAbsenceRequest = {
+      UserId: this.user.Id,
+      Timestamp: timestamp,
+      AbsenceDefinitionId: this.absenceForm.value.AbsenceDefinitionId,
+      Comment: this.absenceForm.value.Comment,
+      IsPartial: this.absenceForm.value.IsPartial
+    };
+    
+    // if partial absence - add time range 
+    if (this.absenceForm.value.IsPartial) {
+      const dateStr = this.absenceForm.value.Timestamp;
+      const fromTime = this.absenceForm.value.PartialTimeFrom;
+      const toTime = this.absenceForm.value.PartialTimeTo;
+      
+      absenceRequest.PartialTimeFrom = `${dateStr}T${fromTime}:00Z`;
+      absenceRequest.PartialTimeTo = `${dateStr}T${toTime}:00Z`;
+    }
+    
+    this.absenceService.createAbsence(absenceRequest).subscribe({
+      next: () => {
+        this.submitting = false;
+        this.absenceAdded.emit();
+        this.closeDialog();
+      },
+      error: (error) => {
+        this.errorMessage = `Error adding absence: ${error.message}`;
+        this.submitting = false;
+      }
+    });
+  }
+
+  closeDialog(): void {
+    this.absenceForm.reset();
+    this.initForm(); // re-initialize form with default values
+    this.close.emit();
+  }
 }
