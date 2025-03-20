@@ -91,6 +91,7 @@ export class AbsenceGridComponent implements OnInit {
           this.noAbsencesFound = true;
           return;
         }
+        this.noAbsencesFound = false;
 
         // second - each absences and load user 
         absences.forEach((absence) => {
