@@ -6,28 +6,14 @@
       height="30"
     />
   </a>
-  <a class="navbar-brand"></a>
-  <button
-    class="navbar-toggler"
-    type="button"
-    data-toggle="collapse"
-    data-target="#navbarTog1"
-    aria-controls="navbarTog1"
-    aria-expanded="false"
-  >
-    <span class="navbar-toggler-icon"></span>
-  </button>
 
-  <div class="collapse navbar-collapse" id="navbarTog1">
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      <li class="nav-item">
-        <a class="nav-link navbar-txt" href="users">Users</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link navbar-txt" href="absence">Absences</a
-        >
-      </li>
-    </ul>
-    <button type="button" class="btn navbar-btn" routerLink="/settings">Settings</button>
-  </div>
+  <ul class="navbar-nav d-flex flex-row ms-3 me-auto">
+    <li class="nav-item me-3">
+      <a class="nav-link navbar-txt" href="users">Users</a>
+    </li>
+    <li class="nav-item me-3">
+      <a class="nav-link navbar-txt" href="absence">Absences</a>
+    </li>
+  </ul>
+  <button type="button" class="btn navbar-btn" routerLink="/settings">Settings</button>
 </nav>
