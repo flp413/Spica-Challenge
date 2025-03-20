@@ -6,6 +6,7 @@ import { User } from '../../../core/models/user.model';
 import { inject } from '@angular/core';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { RedirectService } from '../../../core/services/redirect.service';
+import { NewUserRequest } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-user-grid',
@@ -24,6 +25,8 @@ export class UserGridComponent implements OnInit, OnDestroy {
   private searchSubscription?: Subscription;
 
   newUserForm!: FormGroup;
+  showAddUserForm = false;
+  submittingUser = false;
 
   private readonly userService = inject(UserService);
   private readonly redirectService = inject(RedirectService);
@@ -117,5 +120,52 @@ export class UserGridComponent implements OnInit, OnDestroy {
 
   refreshData(): void {
     this.loadUsers();
+  }
+
+  // NEW USER
+  openAddUserForm(): void {
+    if (!this.newUserForm) {
+      this.initForm();
+    }
+    this.showAddUserForm = true;
+    this.newUserForm.reset();
+  }
+
+  closeAddUserForm(): void {
+    this.showAddUserForm = false;
+  }
+
+  submitNewUser(): void {
+    if (!this.newUserForm || this.newUserForm.invalid || this.submittingUser) {
+      return;
+    }
+    if (this.newUserForm.invalid || this.submittingUser) {
+      return;
+    }
+    this.submittingUser = true;
+
+    // transform to API format
+    const newUser: NewUserRequest = {
+      FirstName: this.newUserForm.value.FirstName,
+      LastName: this.newUserForm.value.LastName,
+      Email: this.newUserForm.value.Email,
+    };
+
+    this.userService.createUser(newUser).subscribe({
+      next: (user) => {
+        this.submittingUser = false;
+        this.showAddUserForm = false;
+        this.newUserForm.reset();
+
+        this.errorMessage = `User ${user.FirstName} ${user.LastName} created successfully!`;
+        setTimeout(() => (this.errorMessage = ''), 2000);
+
+        this.refreshData();
+      },
+      error: (error) => {
+        this.submittingUser = false;
+        this.errorMessage = `Error creating user: ${error.message}`;
+      },
+    });
   }
 }
