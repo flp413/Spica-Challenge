@@ -1,1 +1,108 @@
-<p>add-absence-dialog works!</p>
+<div class="modal" [class.show]="show" [style.display]="show ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Absence for {{ user.FirstName }} {{ user.LastName }}</h5>
+          <button type="button" class="btn-close" (click)="closeDialog()" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+          <div *ngIf="errorMessage" class="alert alert-danger mb-3">
+            {{ errorMessage }}
+          </div>
+          
+          <div *ngIf="loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading absence types...</p>
+          </div>
+          
+          <form [formGroup]="absenceForm" *ngIf="!loading">
+            <div class="mb-3">
+              <label for="absenceType" class="form-label">Absence Type</label>
+              <select 
+                id="absenceType" 
+                class="form-select" 
+                formControlName="AbsenceDefinitionId"
+                [ngClass]="{'is-invalid': absenceForm.get('AbsenceDefinitionId')?.invalid && absenceForm.get('AbsenceDefinitionId')?.touched}"
+              >
+                <option value="">Select absence type</option>
+                <option *ngFor="let type of absenceDefinitions" [value]="type.Id">{{ type.Name }}</option>
+              </select>
+              <div class="invalid-feedback">Please select an absence type</div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="absenceDate" class="form-label">Date</label>
+              <input 
+                type="date" 
+                id="absenceDate" 
+                class="form-control" 
+                formControlName="Timestamp"
+                [ngClass]="{'is-invalid': absenceForm.get('Timestamp')?.invalid && absenceForm.get('Timestamp')?.touched}"
+              >
+              <div class="invalid-feedback">Please select a date</div>
+            </div>
+            
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="isPartial" formControlName="IsPartial">
+              <label class="form-check-label" for="isPartial">Partial Day Absence</label>
+            </div>
+            
+            <!-- conditional partial time -->
+            <div *ngIf="isPartialTimeSelected" class="row mb-3">
+              <div class="col-md-6">
+                <label for="timeFrom" class="form-label">Time From</label>
+                <input 
+                  type="time" 
+                  id="timeFrom" 
+                  class="form-control" 
+                  formControlName="PartialTimeFrom"
+                  [ngClass]="{'is-invalid': absenceForm.get('PartialTimeFrom')?.invalid && absenceForm.get('PartialTimeFrom')?.touched}"
+                >
+                <div class="invalid-feedback">Required</div>
+              </div>
+              <div class="col-md-6">
+                <label for="timeTo" class="form-label">Time To</label>
+                <input 
+                  type="time" 
+                  id="timeTo" 
+                  class="form-control" 
+                  formControlName="PartialTimeTo"
+                  [ngClass]="{'is-invalid': absenceForm.get('PartialTimeTo')?.invalid && absenceForm.get('PartialTimeTo')?.touched}"
+                >
+                <div class="invalid-feedback">Required</div>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="comment" class="form-label">Comment (optional)</label>
+              <textarea 
+                id="comment" 
+                class="form-control" 
+                rows="3" 
+                formControlName="Comment"
+              ></textarea>
+            </div>
+          </form>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeDialog()">Cancel</button>
+          <button 
+            type="button" 
+            class="btn btn-primary" 
+            [disabled]="absenceForm.invalid || submitting || loading" 
+            (click)="onSubmit()"
+          >
+            <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Add Absence
+          </button>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <div class="modal-backdrop fade show" *ngIf="show"></div>
