@@ -72,6 +72,7 @@
           <th>Username</th>
           <th>Phone</th>
           <th>Location</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -87,6 +88,17 @@
                 ? (user.City || "") + (user.State ? ", " + user.State : "")
                 : "N/A"
             }}
+          </td>
+          <td>
+            <div class="btn-group btn-group-sm">
+              <button
+                class="btn btn-outline-primary"
+                (click)="openAddAbsenceDialog(user)"
+                title="Add absence"
+              >
+                <i class="bi bi-calendar-plus"></i> Absence
+              </button>
+            </div>
           </td>
         </tr>
         <tr *ngIf="filteredUsers.length === 0 && !loading">
@@ -209,3 +221,11 @@
   </div>
   <div class="modal-backdrop fade show" *ngIf="showAddUserForm"></div>
 </div>
+
+<app-add-absence-dialog
+  *ngIf="selectedUser"
+  [user]="selectedUser"
+  [show]="showAddAbsenceDialog"
+  (close)="closeAddAbsenceDialog()"
+  (absenceAdded)="onAbsenceAdded()"
+></app-add-absence-dialog>
