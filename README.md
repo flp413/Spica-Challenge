@@ -9,6 +9,12 @@ Uporabniki lahko pregledujejo, iščejo in dodajajo zaposlene ter upravljajo z n
 
 Za pravilno delovanje aplikacije, morate imeti nameščen Angular 19. Prav tako mora biti omogočena uporaba novejše različiče ogrodja Bootstrap.
 
+Za namestitev knjižnic v terminalu napišite:
+
+```bash
+npm install
+```
+
 Za zagon lokalnega razvojnega strežnika, zaženite:
 
 ```bash
@@ -30,6 +36,12 @@ Spica Challenge is a development task for Spica International. The project is a 
 Users can view, search, add employees and manage their absences through a simple interface. The application stores authorisation data in a local repository for session maintenance.
 
 For the application to work properly, you must have Angular 19 installed. You must also be able to use a recent version of the Bootstrap framework.
+
+To install libraries in the terminal, write:
+
+```bash
+npm install
+```
 
 To start the local development server, run:
 
