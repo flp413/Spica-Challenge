@@ -74,6 +74,12 @@
                 >
                 <div class="invalid-feedback">Required</div>
               </div>
+              <!-- error message -->
+              <div class="col-12 mt-2" *ngIf="hasTimeRangeError()">
+                <div class="alert alert-danger">
+                  End time must be later than start time
+                </div>
+              </div>
             </div>
             
             <div class="mb-3">

@@ -1,16 +1,25 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { AbsenceService } from '../../../core/services/absence.service';
-import { AbsenceDefinition, NewAbsenceRequest } from '../../../core/models/absence.model';
+import {
+  AbsenceDefinition,
+  NewAbsenceRequest,
+} from '../../../core/models/absence.model';
 import { User } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-add-absence-dialog',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './add-absence-dialog.component.html',
-  styleUrls: ['./add-absence-dialog.component.css']
+  styleUrls: ['./add-absence-dialog.component.css'],
 })
 export class AddAbsenceDialogComponent implements OnInit {
  
@@ -60,14 +69,19 @@ export class AddAbsenceDialogComponent implements OnInit {
     // get today in YYYY-MM-DD format
     const today = new Date().toISOString().split('T')[0];
     
-    this.absenceForm = this.formBuilder.group({
-      AbsenceDefinitionId: ['', Validators.required],
-      Timestamp: [today, Validators.required],
-      Comment: [''],
-      IsPartial: [false],
-      PartialTimeFrom: [null],
-      PartialTimeTo: [null]
-    });
+    this.absenceForm = this.formBuilder.group(
+      {
+        AbsenceDefinitionId: ['', Validators.required],
+        Timestamp: [today, Validators.required],
+        Comment: [''],
+        IsPartial: [false],
+        PartialTimeFrom: [null],
+        PartialTimeTo: [null],
+      },
+      {
+        validators: this.validateTimeRange,
+      }
+    );
   }
 
   loadAbsenceDefinitions(): void {
@@ -75,18 +89,20 @@ export class AddAbsenceDialogComponent implements OnInit {
     
     this.absenceService.getAllAbsenceDefinitions().subscribe({
       next: (definitions) => {
-        this.absenceDefinitions = definitions.filter(d => d.IsActive);
+        this.absenceDefinitions = definitions.filter((d) => d.IsActive);
         this.loading = false;
         
         // first definition as default
         if (this.absenceDefinitions.length > 0) {
-          this.absenceForm.get('AbsenceDefinitionId')?.setValue(this.absenceDefinitions[0].Id);
+          this.absenceForm
+            .get('AbsenceDefinitionId')
+            ?.setValue(this.absenceDefinitions[0].Id);
         }
       },
       error: (error) => {
         this.errorMessage = `Failed to load absence types: ${error.message}`;
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -97,7 +113,7 @@ export class AddAbsenceDialogComponent implements OnInit {
     
     this.submitting = true;
     this.errorMessage = '';
-    
+
     // timestamp to include time component
     let timestamp = this.absenceForm.value.Timestamp;
     if (!timestamp.includes('T')) {
@@ -109,7 +125,7 @@ export class AddAbsenceDialogComponent implements OnInit {
       Timestamp: timestamp,
       AbsenceDefinitionId: this.absenceForm.value.AbsenceDefinitionId,
       Comment: this.absenceForm.value.Comment,
-      IsPartial: this.absenceForm.value.IsPartial
+      IsPartial: this.absenceForm.value.IsPartial,
     };
     
     // if partial absence - add time range 
@@ -133,6 +149,31 @@ export class AddAbsenceDialogComponent implements OnInit {
         this.submitting = false;
       }
     });
+  }
+
+  private validateTimeRange(group: AbstractControl): ValidationErrors | null {
+    if (!group.get('IsPartial')?.value) {
+      return null; 
+    }
+    
+    const fromTime = group.get('PartialTimeFrom')?.value;
+    const toTime = group.get('PartialTimeTo')?.value;
+    if (!fromTime || !toTime) {
+      return null;
+    }
+    if (fromTime >= toTime) {
+      return { invalidTimeRange: true };
+    }
+    return null;
+  }
+
+  hasTimeRangeError(): boolean {
+    return (
+      this.absenceForm.hasError('invalidTimeRange') &&
+      this.absenceForm.get('IsPartial')?.value &&
+      this.absenceForm.get('PartialTimeFrom')?.value &&
+      this.absenceForm.get('PartialTimeTo')?.value
+    );
   }
 
   closeDialog(): void {
