@@ -37,9 +37,9 @@
       <button class="btn btn-primary" (click)="openAddUserForm()">
         <i class="bi bi-plus-circle"></i> Add New User
       </button>
-      <button class="btn btn-outline-primary ms-2" (click)="refreshData()">
+      <!-- <button class="btn btn-outline-primary ms-2" (click)="refreshData()">
         <i class="bi bi-arrow-repeat"></i> Refresh
-      </button>
+      </button> -->
     </div>
   </div>
 
@@ -62,16 +62,13 @@
     <p class="mt-2">Loading users...</p>
   </div>
 
-  <div *ngIf="!loading" class="table-responsive">
+  <div *ngIf="!loading" class="table-responsive my-4">
     <table class="table table-striped table-hover">
       <thead class="table-light">
         <tr>
           <th>First Name</th>
           <th>Last Name</th>
           <th>Email</th>
-          <th>Username</th>
-          <th>Phone</th>
-          <th>Location</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -80,15 +77,6 @@
           <td>{{ user.FirstName }}</td>
           <td>{{ user.LastName }}</td>
           <td>{{ user.Email }}</td>
-          <td>{{ user.UserName || "N/A" }}</td>
-          <td>{{ user.Phone || user.Mobile || "N/A" }}</td>
-          <td>
-            {{
-              user.City || user.Address
-                ? (user.City || "") + (user.State ? ", " + user.State : "")
-                : "N/A"
-            }}
-          </td>
           <td>
             <div class="btn-group btn-group-sm">
               <button
@@ -102,7 +90,7 @@
           </td>
         </tr>
         <tr *ngIf="filteredUsers.length === 0 && !loading">
-          <td colspan="6" class="text-center py-4">
+          <td colspan="4" class="text-center py-4">
             <p *ngIf="searchTerm" class="mb-0">
               No users found matching "{{ searchTerm }}"
             </p>
