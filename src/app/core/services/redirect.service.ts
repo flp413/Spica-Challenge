@@ -14,7 +14,6 @@ export class RedirectService {
   checkAuthAndRedirect(): boolean {
     const isAuthenticated = this.authService['tokenSubject'].getValue();
     if (!isAuthenticated) {
-      console.log('Not authenticated, redirecting to settings');
       this.router.navigate(['/settings']);
       return false;
     }

@@ -21,9 +21,6 @@ export class UserService {
           return [];
         }
       }),
-      tap((users) => {
-        console.log(`Mapped ${users.length} users from API response`);
-      })
     );
   }
 
@@ -36,7 +33,7 @@ export class UserService {
     return this.apiService.get<User[] | UsersResponse>('Users', params).pipe(
       map((response) => {
         if (Array.isArray(response)) {
-          console.log(`Searching users with term: ${searchTerm}`);
+          // console.log(`Searching users with term: ${searchTerm}`);
           return response.filter(
             (user) =>
               user.FirstName.toLowerCase().startsWith(
@@ -49,7 +46,6 @@ export class UserService {
           return [];
         }
       }),
-      tap((users) => console.log(`Found ${users.length} users matching search`))
     );
   }
 
@@ -58,7 +54,6 @@ export class UserService {
   }
 
   createUser(user: NewUserRequest): Observable<User> {
-    console.log('Creating new user:', user);
     return this.apiService.post<User>('Users', user);
   }
 }

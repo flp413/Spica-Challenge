@@ -74,7 +74,6 @@ export class UserGridComponent implements OnInit, OnDestroy {
 
     this.userService.getAllUsers().subscribe({
       next: (users) => {
-        console.log(`Loaded ${users.length} users`);
         this.users = users;
         this.filteredUsers = users;
         this.loading = false;

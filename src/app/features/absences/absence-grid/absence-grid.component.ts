@@ -34,7 +34,6 @@ export class AbsenceGridComponent implements OnInit {
   private absenceDefinitions: { [id: string]: string } = {};
 
   ngOnInit(): void {
-    console.log("Auth - absence", !this.redirectService.checkAuthAndRedirect());
     if (!this.redirectService.checkAuthAndRedirect()) {
       return;
     }
@@ -47,7 +46,6 @@ export class AbsenceGridComponent implements OnInit {
   private loadAbsenceDefinitions(): Observable<void> {
     return this.absenceService.getAllAbsenceDefinitions().pipe(
       tap((definitions) => {
-        console.log(`Loaded ${definitions.length} absence definitions:`, definitions);
         definitions.forEach((def) => {
           this.absenceDefinitions[def.Id] = def.Name;
         });
@@ -64,14 +62,6 @@ export class AbsenceGridComponent implements OnInit {
     this.errorMessage = '';
     this.employeeAbsences = [];
     this.noAbsencesFound = false;
-
-    // Format date for the API - ensure UTC format
-    const apiDate = new Date(this.selectedDate);
-    const apiDateFormat = apiDate.toISOString();
-
-    console.log(
-      `Loading absences for date: ${this.selectedDate} (API format: ${apiDateFormat})`
-    );
 
     // first - all absences for selected date
     this.absenceService
@@ -111,10 +101,6 @@ export class AbsenceGridComponent implements OnInit {
       )
       .subscribe((user) => {
         if (user) {
-          console.log(
-            `Loaded user ${user.FirstName} ${user.LastName}`
-          );
-
           // absence record with user data
           const employeeAbsence = {
             user: user,
@@ -124,10 +110,6 @@ export class AbsenceGridComponent implements OnInit {
           };
 
           this.employeeAbsences = [...this.employeeAbsences, employeeAbsence];
-          console.log(
-            'Employee absences array:',
-            this.employeeAbsences
-          );
         } else {
           console.warn(`No user found for ID: ${absence.UserId}`);
         }
@@ -135,7 +117,7 @@ export class AbsenceGridComponent implements OnInit {
   }
 
   onDateChange(): void {
-    console.log(`Date changed to: ${this.selectedDate}`);
+    // console.log(`Date changed to: ${this.selectedDate}`);
     this.loadAbsencesForDate();
   }
 

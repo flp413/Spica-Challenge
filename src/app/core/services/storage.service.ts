@@ -66,10 +66,10 @@ export class StorageService {
     if (!this.isBrowser) return null;
 
     const token = localStorage.getItem(this.TOKEN_KEY);
-    console.log(
-      'Token retrieved from localStorage:',
-      token ? 'exists' : 'not found'
-    );
+    // console.log(
+    //   'Token retrieved from localStorage:',
+    //   token ? 'exists' : 'not found'
+    // );
     return token;
   }
 
