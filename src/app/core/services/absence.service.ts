@@ -53,4 +53,50 @@ export class AbsenceService {
   deleteAbsence(id: string): Observable<void> {
     return this.apiService.delete<void>(`Absences/${id}`);
   }
+
+  getAbsencesForDate(date: string): Observable<Absence[]> {
+    const params = new HttpParams().set('date', date);
+    return this.apiService
+      .get<Absence[] | AbsenceApiResponse>('Absences', params)
+      .pipe(
+        map((response) => {
+          if (Array.isArray(response)) {
+            console.log(
+              'Filtering',
+              response.filter(
+                (absence) =>
+                  absence.Timestamp.split('T')[0] === date.split('T')[0]
+              )
+            );
+            return response.filter((absence) => {
+              return absence.Timestamp.split('T')[0] === date.split('T')[0];
+            });
+          } else {
+            return [];
+          }
+        })
+      );
+  }
+
+  // between 2 dates - for my own purpose
+  searchAbsences(startDate: string, endDate: string): Observable<Absence[]> {
+    const params = new HttpParams()
+      .set('startDate', startDate)
+      .set('endDate', endDate);
+
+    return this.apiService
+      .get<Absence[] | AbsenceApiResponse>('Absences', params)
+      .pipe(
+        map((response) => {
+          if (Array.isArray(response)) {
+            return response.filter((absence) => {
+              absence.Timestamp.split('T')[0] >= startDate.split('T')[0] &&
+                absence.Timestamp.split('T')[0] <= endDate.split('T')[0];
+            });
+          } else {
+            return [];
+          }
+        })
+      );
+  }
 }
