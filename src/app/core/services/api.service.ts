@@ -1,5 +1,5 @@
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
@@ -9,55 +9,51 @@ import { AuthService } from './auth.service';
 })
 export class ApiService {
   private baseUrl = 'https://api4.allhours.com/api/v1';
-  
+
   private readonly http = inject(HttpClient);
   private readonly authService = inject(AuthService);
 
   get<T>(endpoint: string, params?: HttpParams): Observable<T> {
-    return this.authService.getToken().pipe(
-      switchMap(token => {
-        const headers = this.getAuthHeaders(token);
-        return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { headers, params })
-          .pipe(
-            catchError(error => this.handleError(error))
-          );
-      })
+    return this.request(headers =>
+      this.http.get<T>(`${this.baseUrl}/${endpoint}`, { headers, params })
     );
   }
 
   post<T>(endpoint: string, body: any): Observable<T> {
-    return this.authService.getToken().pipe(
-      switchMap(token => {
-        const headers = this.getAuthHeaders(token);
-        return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body, { headers })
-          .pipe(
-            catchError(error => this.handleError(error))
-          );
-      })
+    return this.request(headers =>
+      this.http.post<T>(`${this.baseUrl}/${endpoint}`, body, { headers })
     );
   }
 
   put<T>(endpoint: string, body: any): Observable<T> {
-    return this.authService.getToken().pipe(
-      switchMap(token => {
-        const headers = this.getAuthHeaders(token);
-        return this.http.put<T>(`${this.baseUrl}/${endpoint}`, body, { headers })
-          .pipe(
-            catchError(error => this.handleError(error))
-          );
-      })
+    return this.request(headers =>
+      this.http.put<T>(`${this.baseUrl}/${endpoint}`, body, { headers })
     );
   }
 
   delete<T>(endpoint: string): Observable<T> {
-    return this.authService.getToken().pipe(
-      switchMap(token => {
-        const headers = this.getAuthHeaders(token);
-        return this.http.delete<T>(`${this.baseUrl}/${endpoint}`, { headers })
-          .pipe(
-            catchError(error => this.handleError(error))
-          );
-      })
+    return this.request(headers =>
+      this.http.delete<T>(`${this.baseUrl}/${endpoint}`, { headers })
+    );
+  }
+
+  // sends the request with the current token; if the token has expired (401),
+  // gets a new one with the saved credentials and tries once more
+  private request<T>(send: (headers: HttpHeaders) => Observable<T>): Observable<T> {
+    const withToken = () =>
+      this.authService.getToken().pipe(
+        switchMap(token => send(this.getAuthHeaders(token)))
+      );
+
+    return withToken().pipe(
+      catchError(error => {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          this.authService.logout();
+          return withToken();
+        }
+        return throwError(() => error);
+      }),
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -70,8 +66,8 @@ export class ApiService {
 
   private handleError(error: any): Observable<never> {
     console.error('API Error', error);
-    let errorMessage = 'An unknown error occurred';
-    
+    let errorMessage = error?.message || 'An unknown error occurred';
+
     if (error.error && error.error.message) {
       errorMessage = error.error.message;
     } else if (error.status === 401) {

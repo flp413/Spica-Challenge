@@ -10,6 +10,8 @@ class MockAuthService {
   getToken(): Observable<string> {
     return of('mock-token-123');
   }
+
+  logout(): void {}
 }
 
 describe('ApiService', () => {
@@ -132,6 +134,22 @@ describe('ApiService', () => {
     expect(completed).toBeTrue();
   });
 
+  it('should get a new token and retry once after 401', () => {
+    const endpoint = 'Users';
+    const authService = TestBed.inject(AuthService);
+    spyOn(authService, 'logout').and.callThrough();
+
+    let actualData: any = null;
+    service.get(endpoint).subscribe(data => (actualData = data));
+
+    httpController.expectOne(`${baseUrl}/${endpoint}`)
+      .flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
+    expect(authService.logout).toHaveBeenCalled();
+
+    httpController.expectOne(`${baseUrl}/${endpoint}`).flush([{ id: '1' }]);
+    expect(actualData).toEqual([{ id: '1' }]);
+  });
+
   it('should handle 401 unauthorized errors', () => {
     const endpoint = 'Users';
 
@@ -143,8 +161,11 @@ describe('ApiService', () => {
       },
     });
 
-    const req = httpController.expectOne(`${baseUrl}/${endpoint}`);
-    req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized'});
+    // first try + one retry with a fresh token
+    httpController.match(`${baseUrl}/${endpoint}`)[0]
+      .flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
+    httpController.expectOne(`${baseUrl}/${endpoint}`)
+      .flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
     expect(errorMessage).toBe('Authentication error. Please log in again.');
   });
 });
