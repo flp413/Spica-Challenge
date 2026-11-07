@@ -134,8 +134,9 @@ export class AddAbsenceDialogComponent implements OnInit {
       const fromTime = this.absenceForm.value.PartialTimeFrom;
       const toTime = this.absenceForm.value.PartialTimeTo;
       
-      absenceRequest.PartialTimeFrom = `${dateStr}T${fromTime}:00Z`;
-      absenceRequest.PartialTimeTo = `${dateStr}T${toTime}:00Z`;
+      // times are entered in local time, the API expects UTC
+      absenceRequest.PartialTimeFrom = new Date(`${dateStr}T${fromTime}`).toISOString();
+      absenceRequest.PartialTimeTo = new Date(`${dateStr}T${toTime}`).toISOString();
     }
     
     this.absenceService.createAbsence(absenceRequest).subscribe({

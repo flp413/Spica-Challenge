@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
   AbsenceDefinition,
@@ -23,9 +23,6 @@ export class AbsenceService {
         'AbsenceDefinitions'
       )
       .pipe(
-        tap((response) =>
-          console.log('Raw absence definitions response:', response)
-        ),
         map((response) => {
           if (Array.isArray(response)) {
             return response;
@@ -41,9 +38,7 @@ export class AbsenceService {
   }
 
   createAbsence(absence: NewAbsenceRequest): Observable<Absence> {
-    return this.apiService
-      .post<Absence>('Absences', absence)
-      .pipe(tap((response) => console.log('Created absence:', response)));
+    return this.apiService.post<Absence>('Absences', absence);
   }
 
   getAbsenceById(id: string): Observable<Absence> {
@@ -61,13 +56,6 @@ export class AbsenceService {
       .pipe(
         map((response) => {
           if (Array.isArray(response)) {
-            console.log(
-              'Filtering',
-              response.filter(
-                (absence) =>
-                  absence.Timestamp.split('T')[0] === date.split('T')[0]
-              )
-            );
             return response.filter((absence) => {
               return absence.Timestamp.split('T')[0] === date.split('T')[0];
             });
@@ -90,8 +78,8 @@ export class AbsenceService {
         map((response) => {
           if (Array.isArray(response)) {
             return response.filter((absence) => {
-              absence.Timestamp.split('T')[0] >= startDate.split('T')[0] &&
-                absence.Timestamp.split('T')[0] <= endDate.split('T')[0];
+              const day = absence.Timestamp.split('T')[0];
+              return day >= startDate.split('T')[0] && day <= endDate.split('T')[0];
             });
           } else {
             return [];

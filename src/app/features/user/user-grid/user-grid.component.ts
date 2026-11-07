@@ -83,7 +83,6 @@ export class UserGridComponent implements OnInit, OnDestroy {
         this.errorMessage = `Error loading users: ${error.message}`;
         this.loading = false;
         this.changeDetector.detectChanges();
-        console.error('Failed to load users', error);
       },
     });
   }
@@ -142,9 +141,6 @@ export class UserGridComponent implements OnInit, OnDestroy {
     if (!this.newUserForm || this.newUserForm.invalid || this.submittingUser) {
       return;
     }
-    if (this.newUserForm.invalid || this.submittingUser) {
-      return;
-    }
     this.submittingUser = true;
 
     // transform to API format
@@ -160,10 +156,11 @@ export class UserGridComponent implements OnInit, OnDestroy {
         this.showAddUserForm = false;
         this.newUserForm.reset();
 
-        this.errorMessage = `User ${user.FirstName} ${user.LastName} created successfully!`;
-        setTimeout(() => (this.errorMessage = ''), 2000);
-
+        // refresh first, because loadUsers() clears the message
         this.refreshData();
+
+        this.errorMessage = `User ${user.FirstName} ${user.LastName} created successfully!`;
+        setTimeout(() => (this.errorMessage = ''), 3000);
       },
       error: (error) => {
         this.submittingUser = false;
