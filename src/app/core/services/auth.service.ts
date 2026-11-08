@@ -55,7 +55,6 @@ export class AuthService {
     return this.http.post<AuthResponse>(this.tokenUrl, body.toString(), { headers })
       .pipe(
         tap(response => {
-          // console.log('Authentication successful, token received');
           this.storageService.saveToken(response.access_token);
           this.tokenSubject.next(response.access_token);
         }),

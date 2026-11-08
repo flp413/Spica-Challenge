@@ -33,7 +33,6 @@ export class UserService {
     return this.apiService.get<User[] | UsersResponse>('Users', params).pipe(
       map((response) => {
         if (Array.isArray(response)) {
-          // console.log(`Searching users with term: ${searchTerm}`);
           return response.filter(
             (user) =>
               user.FirstName.toLowerCase().startsWith(

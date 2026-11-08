@@ -17,7 +17,6 @@ export class StorageService {
     if (!this.isBrowser) return;
 
     try {
-      console.log('Saving credentials to localStorage');
       localStorage.setItem(
         this.AUTH_KEY,
         JSON.stringify({ clientId, clientSecret })
@@ -32,13 +31,7 @@ export class StorageService {
 
     try {
       const credentials = localStorage.getItem(this.AUTH_KEY);
-      if (!credentials) {
-        console.log('No credentials found in localStorage');
-        return null;
-      } else {
-        console.log('Credentials retrieved from localStorage');
-        return JSON.parse(credentials);
-      }
+      return credentials ? JSON.parse(credentials) : null;
     } catch (error) {
       console.error(
         'Error retrieving auth credentials from localStorage:',
@@ -50,15 +43,11 @@ export class StorageService {
 
   clearAuthCredentials(): void {
     if (!this.isBrowser) return;
-
-    console.log('Clearing credentials from localStorage');
     localStorage.removeItem(this.AUTH_KEY);
   }
 
   saveToken(token: string): void {
     if (!this.isBrowser) return;
-
-    console.log('Saving token to localStorage');
     localStorage.setItem(this.TOKEN_KEY, token);
   }
 
@@ -66,24 +55,16 @@ export class StorageService {
     if (!this.isBrowser) return null;
 
     const token = localStorage.getItem(this.TOKEN_KEY);
-    // console.log(
-    //   'Token retrieved from localStorage:',
-    //   token ? 'exists' : 'not found'
-    // );
     return token;
   }
 
   clearToken(): void {
     if (!this.isBrowser) return;
-
-    console.log('Clearing token from localStorage');
     localStorage.removeItem(this.TOKEN_KEY);
   }
 
   clearAll(): void {
     if (!this.isBrowser) return;
-
-    console.log('Clearing all auth data from localStorage');
     localStorage.removeItem(this.AUTH_KEY);
     localStorage.removeItem(this.TOKEN_KEY);
   }
